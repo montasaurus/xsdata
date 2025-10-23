@@ -500,10 +500,21 @@ class DefinitionsMapperTests(FactoryTestCase):
             DefinitionsMapper.build_attr(name, str_qname, native=True, namespace="")
             for name in ["faultcode", "faultstring", "faultactor", "detail"]
         ]
+        expected_faultactor = next(
+            attr for attr in expected_fault_attrs if attr.name == "faultactor"
+        )
+        expected_faultactor.restrictions.min_occurs = 0
+        expected_faultactor.restrictions.max_occurs = 1
+        expected_faultactor.default = None
 
         self.assertEqual(1, len(body.attrs))
         self.assertEqual(expected_fault_attr, body.attrs[0])
         self.assertEqual(expected_fault_attrs, body.inner[0].attrs)
+        faultactor_attr = next(
+            attr for attr in body.inner[0].attrs if attr.name == "faultactor"
+        )
+        self.assertTrue(faultactor_attr.is_optional)
+        self.assertIsNone(faultactor_attr.default)
 
         for attr in body.attrs:
             self.assertTrue(attr.is_optional)
@@ -536,6 +547,12 @@ class DefinitionsMapperTests(FactoryTestCase):
                 "detail", body.inner[0].inner[0].qname, forward=True, namespace=""
             )
         )
+        expected_faultactor = next(
+            attr for attr in expected_fault_attrs if attr.name == "faultactor"
+        )
+        expected_faultactor.restrictions.min_occurs = 0
+        expected_faultactor.restrictions.max_occurs = 1
+        expected_faultactor.default = None
 
         expected_fault_detail_attrs = [
             DefinitionsMapper.build_attr(
@@ -548,6 +565,11 @@ class DefinitionsMapperTests(FactoryTestCase):
         self.assertEqual(expected_fault_attr, body.attrs[0])
         self.assertEqual(expected_fault_attrs, body.inner[0].attrs)
         self.assertEqual(expected_fault_detail_attrs, body.inner[0].inner[0].attrs)
+        faultactor_attr = next(
+            attr for attr in body.inner[0].attrs if attr.name == "faultactor"
+        )
+        self.assertTrue(faultactor_attr.is_optional)
+        self.assertIsNone(faultactor_attr.default)
 
     def test_build_envelope_fault_raises_error_if_missing_inner_body(self) -> None:
         target = ClassFactory.create()

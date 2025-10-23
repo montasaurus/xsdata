@@ -252,13 +252,20 @@ class DefinitionsMapper:
         else:
             default_fields.append("detail")
 
-        collections.prepend(
-            fault_class.attrs,
-            *(
-                cls.build_attr(f, str(DataType.STRING), native=True, namespace="")
-                for f in default_fields
-            ),
+        default_attrs = [
+            cls.build_attr(name, str(DataType.STRING), native=True, namespace="")
+            for name in default_fields
+        ]
+
+        faultactor_attr = next(
+            (attr for attr in default_attrs if attr.name == "faultactor"), None
         )
+        if faultactor_attr:
+            faultactor_attr.restrictions.min_occurs = 0
+            faultactor_attr.restrictions.max_occurs = 1
+            faultactor_attr.default = None
+
+        collections.prepend(fault_class.attrs, *default_attrs)
 
         for attr in body.attrs:
             attr.restrictions.min_occurs = 0
