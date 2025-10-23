@@ -28,7 +28,7 @@ classifiers = [
     "Topic :: Text Processing :: Markup :: XML",
 ]
 keywords = ["xsd", "wsdl", "schema", "dtd", "binding", "xml", "json", "dataclasses", "generator", "cli"]
-requires-python = ">=3.9"
+requires-python = ">=3.13"
 dependencies = [
     "typing-extensions>=4.7.0",
 ]
